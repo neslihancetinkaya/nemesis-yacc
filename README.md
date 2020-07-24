@@ -7,8 +7,8 @@ Neslihan Çetinkaya
 
 ## Syntax
 < line > ::= < statements > | < line > < statements > <br/> 
-< statements > ::= < printstatement > | < exitstatement > | < assignmentstatement > | < whilestatement > | < ifelsestatement > | < incdecstatement > | < functionstatement > 
-	| < functioncallstatement > <br/>
+< statements > ::= < printstatement > | < exitstatement > | < assignmentstatement > | < whilestatement > | < ifelsestatement > <br/>
+| < incdecstatement > | < functionstatement > | < functioncallstatement > <br/>
 < exp > ::= < arithmeticexp > | < logicalexp > <br/>
 < term > ::= < number > | < identifier > <br/>
 < comment > : < singleline comment > | < multiline comment > <br/>
