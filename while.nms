@@ -1,0 +1,5 @@
+COMMENT 		Write EXIT to end program
+
+WHILE(TRUE){
+	PRINT 5;
+}

@@ -1,0 +1,8 @@
+IF(TRUE AND FALSE){		COMMENT if(false)
+	a ASSIGN 4;		COMMENT a = 4
+}
+ELSE{				COMMENT else
+	a ASSIGN 5;		COMMENT a = 5
+}
+PRINT a;			COMMENT prints 5
+EXIT;				COMMENT exit

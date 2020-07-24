@@ -1,0 +1,6 @@
+FUNCTION a(){
+	PRINT 4;
+}
+FUNCTION a(){		COMMENT The function already exists.
+	PRINT 20;
+}
