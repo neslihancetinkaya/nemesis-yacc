@@ -87,7 +87,7 @@ funcexp	: func identifier '(' ')' {functionExp($2);}
 	
 functioncallstatement : identifier '(' ')' ';' {functionCall($1);}
 	;	
-//////////////////////////////
+
 assignment	: identifier assign exp  		{ updateSymbolVal($1,$3); }
 			;	
 	;
