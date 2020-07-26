@@ -117,10 +117,8 @@ Neslihan Çetinkaya
 < words > ::= ASSIGN | PLUS | MINUS | DIVIDE | MULTIPLY | MOD | AND | OR | NOT | GREATERTHAN  <br/>
        | GREATERTHANOREQUAL | LESSTHAN | LESSTHANOREQUAL | EQUAL | NOTEQUAL | TRUE | FALSE | COMMENT <br/>
        | START | END | IF | ELSE | WHILE | PRINT | EXIT | INCREASE | DECREASE | FUNCTION
-
   
 ## Explanations about the language
-
 The language will be used by kids, for making mathematical operations. <br/>
 - ASSIGN -> ASSIGN is a word for assigning an integer to an identifier.
 - PLUS -> PLUS is a word for adding two integer.

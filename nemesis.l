@@ -15,19 +15,19 @@ int yylex();
 "AND"		{return and;}
 "OR"		{return or;}
 "NOT"		{return not;}
-"TRUE"		{return TRU;}
-"FALSE"	{return FALS;}
+"TRUE"		{return TRUE;}
+"FALSE"	{return FALSE;}
 "GREATERTHAN"	{return gt;}
 "LESSTHAN"	{return lt;}
 "LESSTHANOREQUAL" {return lte;}
 "GREATERTHANOREQUAL" {return gte;}
 "EQUAL"	{return eq;}
 "NOTEQUAL"	{return neq;}
-"WHILE"	{return whil;}
+"WHILE"	{return WHILE;}
 "INCREMENT"	{return inc;}
 "DECREMENT"	{return dec;}
-"IF"		{return iff;}
-"ELSE"		{return elsee;}
+"IF"		{return IF;}
+"ELSE"		{return ELSE;}
 "FUNCTION"	{return func;}
 START(.*\n)*.*END ;
 COMMENT(.*) ;

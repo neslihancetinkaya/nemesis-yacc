@@ -6,10 +6,7 @@ int yylex();
 #include <ctype.h>
 int symbols[52];
 int symbolVal(char symbol);
-int val_1 = 0; //val for while statements
-int val_2 = 0; //val for if statements
-int val_3 = 0; //val for else statements
-int val_4 = 0; //val for function statements
+int val_1 = 0;
 int ifval = 1;
 int whileval = 1;
 int funcval = 0;
@@ -26,8 +23,8 @@ void updateSymbolVal(char symbol, int val);
 %token <id> identifier
 %token assign
 %token plus minus multiply divide mod
-%token and or not TRU FALS gt lt lte gte eq neq
-%token whil inc dec iff elsee func
+%token and or not TRUE FALSE gt lt lte gte eq neq
+%token WHILE inc dec IF ELSE func
 %type <num> line exp arithmeticexp logicalexp term boolean statements 
 %type <num> printstatement exitstatement assignmentstatement 
 %type <num> functionstatement functioncallstatement functionstates functionsts funcexp
@@ -77,7 +74,7 @@ incdecstatement : inc identifier ';'		{updateSymbolVal($2,symbolVal($2) + 1);}
 		| dec identifier ';'		{updateSymbolVal($2,symbolVal($2) - 1);}
 	;
 	
-functionstatement : funcexp '{' functionstates '}' {if(funcval == 1) $$ = val_4;}
+functionstatement : funcexp '{' functionstates '}' {if(funcval == 1) $$ = val_1;}
 		;
 	;
 	
@@ -85,8 +82,8 @@ funcexp	: func identifier '(' ')' {functionExp($2);}
 		;
 	;
 	
-functioncallstatement : identifier '(' ')' ';' {functionCall($1);}
-	;	
+functioncallstatement : identifier '(' ')' ';' {functionCall($1);} 
+	;			
 
 assignment	: identifier assign exp  		{ updateSymbolVal($1,$3); }
 			;	
@@ -118,8 +115,8 @@ logicalexp	: logicalexp and boolean			{$$ = $1 && $3;}
        	| boolean                			{$$ = $1;}
        ; 
 
-whileexp	: whil '(' logicalexp ')'  	{whileval = $3;}
-		| whil '(' identifier ')'  	{whileval = symbolVal($3);}
+whileexp	: WHILE '(' logicalexp ')'  	{whileval = $3;}
+		| WHILE '(' identifier ')'  	{whileval = symbolVal($3);}
 	; 
 
 whilestates	: sts
@@ -136,12 +133,12 @@ whilests	: identifier assign sts 	{while(whileval == 1) updateSymbolVal($1,val_1
 		| functioncallstatement	{;}
 	;
 	
-ifstatement	: ifexp '{' ifstates '}' 	{if(ifval == 1) $$ = val_2;}
+ifstatement	: ifexp '{' ifstates '}' 	{if(ifval == 1) $$ = val_1;}
 		;
 	;
 
-ifexp		: iff '(' logicalexp ')'  	{ifval = $3;}
-		| iff '(' identifier ')'  	{ifval = symbolVal($3);}
+ifexp		: IF '(' logicalexp ')'  	{ifval = $3;}
+		| IF '(' identifier ')'  	{ifval = symbolVal($3);}
 	;
 	
 ifstates	: sts
@@ -150,15 +147,15 @@ ifstates	: sts
 		| ifstates ifsts
 	;
 	
-ifsts		: identifier assign sts 	{if(ifval == 1) updateSymbolVal($1,val_2);}
-		| print sts 			{if(ifval == 1) printf("Printing %d\n",val_2);}
+ifsts		: identifier assign sts 	{if(ifval == 1) updateSymbolVal($1,val_1);}
+		| print sts 			{if(ifval == 1) printf("Printing %d\n",val_1);}
 		| ifelsestatement 		{;}
 		| whilestatement 		{;}
 		| incdecstatement 		{;}
 		| functioncallstatement	{;}
 	;
 	
-elsestatement	: elsee '{' elsestates '}'	{if(ifval == 0) $$ = val_3;}
+elsestatement	: ELSE '{' elsestates '}'	{if(ifval == 0) $$ = val_1;}
 		;
 	;
 	
@@ -168,8 +165,8 @@ elsestates	: sts
 		| elsestates elsests
 	;	
 	
-elsests	: identifier assign sts 	{if(ifval == 0) updateSymbolVal($1,val_3);}
-		| print sts 			{if(ifval == 0) printf("Printing %d\n",val_3);}
+elsests	: identifier assign sts 	{if(ifval == 0) updateSymbolVal($1,val_1);}
+		| print sts 			{if(ifval == 0) printf("Printing %d\n",val_1);}
 		| ifelsestatement 		{;}
 		| whilestatement 		{;}
 		| incdecstatement 		{;}
@@ -182,38 +179,38 @@ functionstates : sts
 		| functionstates functionsts
 	;
 	
-functionsts	: identifier assign sts 	{if(funcval == 1) updateSymbolVal($1,val_4);}
-		| print sts 			{if(funcval == 1) printf("Printing %d\n",val_4);}
+functionsts	: identifier assign sts 	{if(funcval == 1) updateSymbolVal($1,val_1);}
+		| print sts 			{if(funcval == 1) printf("Printing %d\n",val_1);}
 		| ifelsestatement 		{;}
 		| whilestatement 		{;}
 		| incdecstatement 		{;}
 		| functioncallstatement	{;}
 	;
 		
-sts		: term plus term ';' 		{val_1 = $1 + $3; val_2 = $1 + $3; val_3 = $1 + $3; val_4 = $1 + $3;}
-		| term minus term ';' 		{val_1 = $1 - $3; val_2 = $1 - $3; val_3 = $1 - $3; val_4 = $1 - $3;}
-		| term multiply term ';' 	{val_1 = $1 * $3; val_2 = $1 * $3; val_3 = $1 * $3; val_4 = $1 * $3;} 
-		| term divide term ';' 	{val_1 = $1 / $3; val_2 = $1 / $3; val_3 = $1 / $3; val_4 = $1 / $3;}
-		| term mod term ';' 		{val_1 = $1 % $3; val_2 = $1 % $3; val_3 = $1 % $3; val_4 = $1 % $3;}
-		| boolean and boolean ';' 	{val_1 = $1 && $3; val_2 = $1 && $3; val_3 = $1 && $3; val_4 = $1 && $3;}
-		| boolean or boolean ';' 	{val_1 = $1 || $3; val_2 = $1 || $3; val_3 = $1 || $3; val_4 = $1 || $3;}
-		| term gt term ';' 		{val_1 = $1 > $3 ? 1 : 0; val_2 = $1 > $3 ? 1 : 0; val_3 = $1 > $3 ? 1 : 0; val_4 = $1 > $3 ? 1 : 0;}
-		| term lt term ';' 		{val_1 = $1 < $3 ? 1 : 0; val_2 = $1 < $3 ? 1 : 0; val_3 = $1 < $3 ? 1 : 0; val_4 = $1 < $3 ? 1 : 0;}	
-		| term gte term ';' 		{val_1 = $1 >= $3 ? 1 : 0; val_2 = $1 >= $3 ? 1 : 0; val_3 = $1 >= $3 ? 1 : 0; val_4 = $1 >= $3 ? 1 : 0;}	
-		| term lte term ';' 		{val_1 = $1 <= $3 ? 1 : 0; val_2 = $1 <= $3 ? 1 : 0; val_3 = $1 <= $3 ? 1 : 0; val_4 = $1 <= $3 ? 1 : 0;}
-		| term eq term ';' 		{val_1 = $1 == $3 ? 1 : 0; val_2 = $1 == $3 ? 1 : 0; val_3 = $1 == $3 ? 1 : 0; val_4 = $1 == $3 ? 1 : 0;}
-		| term neq term ';' 		{val_1 = $1 != $3 ? 1 : 0; val_2 = $1 != $3 ? 1 : 0; val_3 = $1 != $3 ? 1 : 0; val_4 = $1 != $3 ? 1 : 0;}
-		| boolean eq boolean ';' 	{val_1 = $1 == $3 ? 1 : 0; val_2 = $1 == $3 ? 1 : 0; val_3 = $1 == $3 ? 1 : 0; val_4 = $1 == $3 ? 1 : 0;}
-		| boolean neq boolean ';' 	{val_1 = $1 != $3 ? 1 : 0; val_2 = $1 != $3 ? 1 : 0; val_3 = $1 != $3 ? 1 : 0; val_4 = $1 != $3 ? 1 : 0;}
-		| inc identifier ';' 		{val_1 = symbolVal($2) + 1; val_2 = symbolVal($2) + 1; val_3 = symbolVal($2) + 1; val_4 = symbolVal($2) + 1;}
-		| dec identifier ';' 		{val_1 = symbolVal($2) - 1; val_2 = symbolVal($2) - 1; val_3 = symbolVal($2) - 1; val_4 = symbolVal($2) - 1;}
-		| not boolean ';' 		{val_1 = !$2; val_2 = !$2; val_3 = !$2; val_4 = !$2;}
-		| boolean ';' 			{val_1 = $1; val_2 = $1; val_3 = $1; val_4 = $1;}
-		| term ';' 			{val_1 = $1; val_2 = $1; val_3 = $1; val_4 = $1;}
+sts		: term plus term ';' 		{val_1 = $1 + $3;}
+		| term minus term ';' 		{val_1 = $1 - $3;}
+		| term multiply term ';' 	{val_1 = $1 * $3;} 
+		| term divide term ';' 	{val_1 = $1 / $3;}
+		| term mod term ';' 		{val_1 = $1 % $3;}
+		| boolean and boolean ';' 	{val_1 = $1 && $3;}
+		| boolean or boolean ';' 	{val_1 = $1 || $3;}
+		| term gt term ';' 		{val_1 = $1 > $3 ? 1 : 0;}
+		| term lt term ';' 		{val_1 = $1 < $3 ? 1 : 0;}	
+		| term gte term ';' 		{val_1 = $1 >= $3 ? 1 : 0;}	
+		| term lte term ';' 		{val_1 = $1 <= $3 ? 1 : 0;}
+		| term eq term ';' 		{val_1 = $1 == $3 ? 1 : 0;}
+		| term neq term ';' 		{val_1 = $1 != $3 ? 1 : 0;}
+		| boolean eq boolean ';' 	{val_1 = $1 == $3 ? 1 : 0;}
+		| boolean neq boolean ';' 	{val_1 = $1 != $3 ? 1 : 0;}
+		| inc identifier ';' 		{val_1 = symbolVal($2) + 1;}
+		| dec identifier ';' 		{val_1 = symbolVal($2) - 1;}
+		| not boolean ';' 		{val_1 = !$2;}
+		| boolean ';' 			{val_1 = $1;}
+		| term ';' 			{val_1 = $1;}
 	;     	
     		
-boolean	: TRU				{$$ = 1;}
-		| FALS				{$$ = 0;}
+boolean	: TRUE				{$$ = 1;}
+		| FALSE			{$$ = 0;}
        ;
        
 term   	: number                	{$$ = $1;}
